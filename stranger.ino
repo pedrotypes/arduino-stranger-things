@@ -3,7 +3,7 @@
 #define DATA_PIN 6
 #define NUM_LEDS 100
 #define COLOR_ORDER RGB
-#define BRIGHTNESS 100
+#define BRIGHTNESS 150
 
 #define arr_len( x )  ( sizeof( x ) / sizeof( *x ) )
 
@@ -52,18 +52,9 @@ void setup() {
   FastLED.addLeds<WS2811, DATA_PIN>(leds, NUM_LEDS);
 }
 
-void allOff() {
-  // Power down all the letters
-  for (int i = 0; i < NUM_LEDS; i++) {
-    leds[i] = CHSV(0, 0, 0);
-    FastLED.show();
-  }
-}
+// Blink all the letters for the word, one at a time
+void say(int** letters, int letter_duration=1000, int wait=5000) {
 
-// Turn on all the letters for the word, wait a bit, then turn off
-void say(int** letters, int duration=5000, int wait=1000) {
-
-  // Light up all the letters
   int i = 0;
   while (1) {
     // Break out if we found the END element
@@ -80,20 +71,21 @@ void say(int** letters, int duration=5000, int wait=1000) {
       if (led == 0) {
         break;
       }
-      
+
+      // Light it up
       leds[led] = CHSV(random(0, 255), 200, BRIGHTNESS);
       FastLED.show();
-      delay(10);
+
+      // Wait a bit
+      delay(letter_duration);
+    
+      // Turn it off
+      leds[i] = CHSV(0, 0, 0);
+      FastLED.show();
     }
 
     i++;
   }
-
-  // Leave them on for a while
-  delay(duration);
-
-  // Turn them off
-  allOff();
 
   // Wait a bit until the next word
   delay(wait);
