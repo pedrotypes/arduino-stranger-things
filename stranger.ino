@@ -42,18 +42,18 @@ int END[1] = {0};
 // Words to say -> Maps to arrays of LEDs. This needs to be declared here
 // because I can't deal with dynamic arrays right now
 int* HELLO[] = {H,E,L,L,O, END};
-int* DICKBUTT[] = {D,I,C,K,B,U,T,T, END};
-
+int* ITSME[] = {I,T,S,M,E, END};
 int* IMHERE[] = {I,M,H,E,R,E, END};
-int* RUN[] = {R,U,N, END};
 int* HELP[] = {H,E,L,P, END};
+int* RUN[] = {R,U,N, END};
+int* DICKBUTT[] = {D,I,C,K,B,U,T,T, END};
 
 void setup() {
   FastLED.addLeds<WS2811, DATA_PIN>(leds, NUM_LEDS);
 }
 
 // Blink all the letters for the word, one at a time
-void say(int** letters, int letter_duration=1000, int wait=5000) {
+void say(int** letters, int letter_duration=1000, int letter_spacing=500, int word_spacing=5000) {
 
   int i = 0;
   while (1) {
@@ -82,17 +82,21 @@ void say(int** letters, int letter_duration=1000, int wait=5000) {
       // Turn it off
       leds[i] = CHSV(0, 0, 0);
       FastLED.show();
+
+      // Wait a bit
+      delay(letter_spacing);
     }
 
     i++;
   }
 
   // Wait a bit until the next word
-  delay(wait);
+  delay(word_spacing);
 }
 
 void loop() { 
   say(HELLO);
+  say(ITSME);
   say(IMHERE);
   say(HELP);
   say(RUN);
