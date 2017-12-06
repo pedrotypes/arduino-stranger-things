@@ -3,50 +3,55 @@
 #define DATA_PIN 6
 #define NUM_LEDS 100
 #define COLOR_ORDER RGB
-#define BRIGHTNESS 150
+#define BRIGHTNESS 255
 
 #define arr_len( x )  ( sizeof( x ) / sizeof( *x ) )
 
 CRGB leds[NUM_LEDS];
 
 // The alphabet to LED map
-int A[] = {1, 2, 3, 4, 0};
-int B[] = {4, 5, 6, 0};
-int C[] = {7, 8, 9, 0};
-int D[] = {10, 11, 12, 0};
-int E[] = {13, 14, 15, 0};
-int F[] = {16, 17, 18, 0};
-int G[] = {19, 20, 21, 0};
-int H[] = {22, 23, 24, 0};
-int I[] = {25, 26, 27, 0};
-int J[] = {28, 29, 30, 0};
-int K[] = {31, 32, 33, 0};
-int L[] = {34, 35, 36, 0};
-int M[] = {37, 38, 39, 0};
-int N[] = {40, 41, 42, 0};
-int O[] = {43, 44, 45, 0};
-int P[] = {46, 47, 48, 0};
-int Q[] = {49, 50, 51, 0};
-int R[] = {52, 53, 54, 0};
-int S[] = {55, 56, 57, 0};
-int T[] = {58, 59, 60, 0};
-int U[] = {61, 62, 63, 0};
-int V[] = {64, 65, 66, 0};
-int W[] = {67, 68, 69, 0};
-int X[] = {70, 71, 72, 0};
-int Y[] = {73, 74, 75, 0};
-int Z[] = {76, 77, 78, 0};
+int A[] = {16, 0};
+int B[] = {15, 0};
+int C[] = {13, 0};
+int D[] = {11, 0};
+int E[] = {9, 0};
+int F[] = {7, 0};
+int G[] = {5, 0};
+int H[] = {3, 0};
+int I[] = {23, 0};
+int J[] = {25, 0};
+int K[] = {26, 0};
+int L[] = {28, 0};
+int M[] = {30, 0};
+int N[] = {32, 0};
+int O[] = {34, 0};
+int P[] = {36, 0};
+int Q[] = {38, 0};
+int R[] = {64, 0};
+int S[] = {63, 0};
+int T[] = {61, 0};
+int U[] = {60, 0};
+int V[] = {58, 0};
+int W[] = {57, 0};
+int X[] = {55, 0};
+int Y[] = {54, 0};
+int Z[] = {52, 0};
 int END[1] = {0};
 
 
 // Words to say -> Maps to arrays of LEDs. This needs to be declared here
 // because I can't deal with dynamic arrays right now
+
+// 22
+
+int* abc[] = {A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, END};
 int* HELLO[] = {H,E,L,L,O, END};
 int* ITSME[] = {I,T,S,M,E, END};
 int* IMHERE[] = {I,M,H,E,R,E, END};
 int* HELP[] = {H,E,L,P, END};
 int* RUN[] = {R,U,N, END};
 int* DICKBUTT[] = {D,I,C,K,B,U,T,T, END};
+int* JOLLIERTHINGS[] = {J,O,L,L,I,E,R,T,H,I,N,G,S, END};
 
 void setup() {
   FastLED.addLeds<WS2811, DATA_PIN>(leds, NUM_LEDS);
@@ -80,7 +85,7 @@ void say(int** letters, int letter_duration=1000, int letter_spacing=500, int wo
       delay(letter_duration);
     
       // Turn it off
-      leds[i] = CHSV(0, 0, 0);
+      leds[led] = CHSV(0, 0, 0);
       FastLED.show();
 
       // Wait a bit
@@ -101,5 +106,6 @@ void loop() {
   say(HELP);
   say(RUN);
   say(DICKBUTT);
+  say(JOLLIERTHINGS);
 }
 
