@@ -13,18 +13,11 @@ elapsedMillis timeElapsed;//Create an Instance
 byte mac[] = {
   0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED
 };
-// fill in an available IP address on your network here,
-// for manual configuration:
-IPAddress ip(192, 168, 14, 177);
-
-// fill in your Domain Name Server address here:
-//IPAddress myDns(1, 1, 1, 1);
 
 // initialize the library instance:
 EthernetClient client;
 
-//char server[] = "www.thatbulb.com/jt";
-IPAddress server(18,217,187,12);
+IPAddress server(18,217,187,12); //Will's aws ec2 instance running node
 
 unsigned long lastConnectionTime = 0;             // last time you connected to the server, in milliseconds
 const unsigned long postingInterval = 10L * 1000L; // delay between updates, in milliseconds
@@ -37,14 +30,13 @@ const unsigned long postingInterval = 10L * 1000L; // delay between updates, in 
 
 CRGB leds[NUM_LEDS];
 
-
-
+//default phrases before it has network
 String phrases[] = {
-  "one",
-  "two",
-  "three",
-  "four",
-  "five"
+  "helpme",
+  "ineed",
+  "dickbutt",
+  "itsme",
+  "demogorgon"
 };
 
 // Map letter char code => LED position index
@@ -102,7 +94,7 @@ void setup() {
   // give the ethernet module time to boot up:
   delay(1000);  
   
-  
+  //start the Ethernet assuming DHCP assigned IP and DNS
   if (Ethernet.begin(mac) == 0) {
     Serial.println("Failed to configure Ethernet using DHCP");
     // no point in carrying on, so do nothing forevermore:
@@ -110,8 +102,6 @@ void setup() {
       ;
   }
   
-  // start the Ethernet connection using a fixed IP address and DNS server:
-  //Ethernet.begin(mac);
   // print the Ethernet board/shield's IP address:
   Serial.print("My IP address: ");
   Serial.println(Ethernet.localIP());
@@ -125,9 +115,10 @@ boolean can_do_next = true;
 
 // Blink all the letters for the word, one at a time
 void say(char* word, int letter_duration=1000, int letter_spacing=500, int word_spacing=5000) {
-  //for (int i = 0; word[i] != 0; i++) {//changed i to w
+
   int w = 0;
   timeElapsed = 0;
+  
   //  for debugging
   //  letter_duration=100;
   //  letter_spacing=50;
@@ -137,32 +128,28 @@ void say(char* word, int letter_duration=1000, int letter_spacing=500, int word_
   Serial.println(strlen(word));
   //each letter has duration + spacing
   while(w <= strlen(word)){
-     //do the getting of the phrases
-  
+    
     int led = get_led_pos(word[w]);
     // Light it up
     if (w < strlen(word)){
       if (timeElapsed < letter_duration){
         leds[led] = CHSV(random(255, 255), 200, BRIGHTNESS); //does this need ot be random?
         FastLED.show();
-        //Serial.println("show letter");
       } else if (timeElapsed >= letter_duration && timeElapsed < letter_duration + letter_spacing){
-        //delay(letter_duration);
-        //Serial.println("hide letter");
         // Turn it off
         leds[led] = CHSV(0, 0, 0);
         FastLED.show();
       } else if (timeElapsed  >= letter_duration + letter_spacing){
-       // Serial.println("next letter");
+        //next letter 
         w++;
         timeElapsed = 0;
       }
     } else {
       if (timeElapsed > word_spacing){
+        //next word
         timeElapsed = 0;
         can_do_next = true;
         phrase_counter++;
-        Serial.println("next word");
         w++;
       }        
     }
@@ -171,6 +158,8 @@ void say(char* word, int letter_duration=1000, int letter_spacing=500, int word_
 
 void loop() {
   if (phrase_counter == 5){
+    //if we've got to the end of the word list
+    //fetch new words if you can.
     can_do_next = false;
     if (client.available()) {
           char c = client.read();
@@ -207,13 +196,12 @@ void loop() {
             //Serial.println(phrase);
           }
         } else {
-          Ethernet.begin(mac);
+            phrase_counter = 0;
+            can_do_next = true;
         }       
   }
   if (can_do_next == true){
     can_do_next = false;
-    Serial.print("in loop saying: ");
-    Serial.println(phrases[phrase_counter]);
     
     char charBuf[phrases[phrase_counter].length()+1]; //create a new char array to work with say()
     phrases[phrase_counter].toCharArray(charBuf,phrases[phrase_counter].length()+1);
