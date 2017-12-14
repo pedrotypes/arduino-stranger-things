@@ -11,6 +11,9 @@ Things you'll need:
 - 9V/1A power for the arduino
 - An arduino board (we used a cheap Uno clone)
 - Install [FastLED](http://fastled.io) from the Arduino IDE
+- Install [Ethernet](https://www.arduino.cc/en/Reference/Ethernet) from the Arduino IDE
+- Install [elapsedMillis](https://playground.arduino.cc/Code/ElapsedMillis) from the Arduino IDE
+- erm. a node.js service that displays a string like this: `<contentful|voteforus|dora|selfserve|winning>` so that the arduino can fetch it.
 
 Many thanks to this instructables article:  
 http://www.instructables.com/id/Arduino-Based-Stranger-Things-Lights/  
@@ -21,4 +24,3 @@ There might be profanity in my code. If that triggers you, maybe read more books
 And remember:
 
 > Mornings are for coffee and contemplation.
-
