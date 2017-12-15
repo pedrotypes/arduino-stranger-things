@@ -68,6 +68,18 @@ int letter_map[][2] = {
     /* x */ {120, 55},
     /* y */ {121, 54},
     /* z */ {122, 52},
+    /* NUMBERS */
+    /* 0 = o */ {48, 34},
+    /* 1 = l */ {48, 28},
+    /* 2 = z */ {48, 52},
+    /* 3 = e */ {48, 9},
+    /* 4 = a */ {48, 16},
+    /* 5 = S */ {48, 63},
+    /* 6 = g */ {48, 5},
+    /* 7 = t */ {48, 61},
+    /* 8 = b */ {48, 15},
+    /* 9 = p */ {48, 36},
+    
 };
 
 //set default strings in an array
@@ -124,8 +136,6 @@ void say(char* word, int letter_duration=1000, int letter_spacing=500, int word_
   //  letter_spacing=50;
   //  word_spacing=500;
 
-  Serial.print("strlen(word): ");
-  Serial.println(strlen(word));
   //each letter has duration + spacing
   while(w <= strlen(word)){
     
@@ -165,16 +175,10 @@ void loop() {
           char c = client.read();
           
           if (c == '<') { //detected start of actual output
-            Serial.println("BEGIN INPUT");
             phrase = ""; //set phrase to ""
             i = 0;
           } else if (c == '|'){ //detect pipe between words
-            char charBuf[phrase.length()+1]; //create a new char array to work with say()
-            //phrase.toCharArray(charBuf,phrase.length()+1);
             phrases[i] = phrase;
-            
-            Serial.print("adding: ");
-            Serial.println(phrases[i]);
             
             phrase = ""; //once we've said the phrase, set to "" again
             i++;
@@ -183,17 +187,12 @@ void loop() {
 
             i = 0;
             
-            Serial.print("adding: ");
-            Serial.println(phrases[i]);
-            
             phrase_counter = 0;
             can_do_next = true;
             
             httpRequest();
           } else { //normal character
             phrase = phrase + String(c); //start adding to the string
-            //Serial.print("phrase: ");
-            //Serial.println(phrase);
           }
         } else {
             phrase_counter = 0;
